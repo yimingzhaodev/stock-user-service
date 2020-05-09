@@ -1,13 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
-import { User } from '../interfaces/user.interface';
+import { UsersResponseDTO } from './users.response.dto';
 
 @Controller('users')
 export class UsersController {
-    @Get()
-    getUsers() : User[] {
-        return [
-            {'name': 'Yiming'},
-            {'name': 'Greg'}
-        ];
-    }
+  @Get()
+  getUsers(): UsersResponseDTO {
+    return new UsersResponseDTO([{ name: 'Yiming' }, { name: 'Greg' }]);
+  }
 }
