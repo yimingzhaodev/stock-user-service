@@ -6,7 +6,7 @@ import { UsersRepository } from './users.repository';
 export class UsersService {
     constructor(private readonly userRepo: UsersRepository){}
 
-    add(user: User): void {
+    add(user: Omit<User, 'id'>): void {
         this.userRepo.add(user);
     }
 

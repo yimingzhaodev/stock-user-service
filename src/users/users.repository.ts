@@ -3,7 +3,8 @@ import { User } from "./interfaces/user.interface";
 
 @Injectable()
 export class UsersRepository {
-    public users: User[] = [
+    private id = 3;
+    private users: User[] = [
         {
             id: 1,
             name: "Yiming",
@@ -14,8 +15,8 @@ export class UsersRepository {
         }
     ];
 
-    add(user: User) {
-        this.users.push(user);
+    add(user: Omit<User, 'id'>) {
+        this.users.push({...user, id: this.id++});
     }
 
     remove(userId: number) {
