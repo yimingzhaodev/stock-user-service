@@ -4,21 +4,21 @@ import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-    constructor(private readonly userRepo: UsersRepository){}
+  constructor(private readonly userRepo: UsersRepository) {}
 
-    add(user: Omit<User, 'id'>): void {
-        this.userRepo.add(user);
-    }
+  add(user: Omit<User, 'id'>): void {
+    this.userRepo.add(user);
+  }
 
-    update(userId: number, updatedUser: Partial<User>): void {
-        this.userRepo.update(userId, updatedUser);
-    }
+  update(userId: number, updatedUser: Partial<User>): void {
+    this.userRepo.update(userId, updatedUser);
+  }
 
-    remove(userId: number): void {
-        this.userRepo.remove(userId);
-    }
-    
-    findAll(): User[] {
-        return this.userRepo.findAll();
-    }
+  remove(userId: number): void {
+    this.userRepo.remove(userId);
+  }
+
+  findAll(): User[] {
+    return this.userRepo.findAll();
+  }
 }
