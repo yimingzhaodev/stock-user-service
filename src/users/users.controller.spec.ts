@@ -1,7 +1,6 @@
 import {UsersService} from "./users.service";
 import {UsersController} from "./users.controller";
 import {Test} from "@nestjs/testing";
-import {User} from "./model/user.entity";
 import {UsersRepository} from "./users.repository";
 import {CreateUserDTO} from "./dto/create.users.dto";
 
