@@ -36,15 +36,39 @@ describe('UsersController', () => {
         it('should add an user', async () => {
             const createUserDTO = new CreateUserDTO();
             createUserDTO.name = 'test'
-
-            const spy = jest.spyOn(usersService, 'add');
-            await usersController.add(createUserDTO) 
+            await usersController.add(createUserDTO)
 
             const addedUser = usersService.findAll().find(user => user.name == 'test');
 
-            expect(spy).toBeCalledWith(createUserDTO);
             expect(addedUser).toBeDefined();
             expect(addedUser.name).toEqual(createUserDTO.name);
+        });
+    })
+
+    describe('put',  () => {
+        it('should update an user\'s name', async () => {
+            const createUserDTO = new CreateUserDTO();
+            createUserDTO.name = 'test';
+            await usersController.add(createUserDTO);
+            createUserDTO.name="John";
+            await usersController.update(3, createUserDTO);
+
+            const updatedUser = usersService.findAll().find(user => user.name == 'John');
+
+            expect(updatedUser).toBeDefined();
+            expect(updatedUser.name).toEqual(createUserDTO.name);
+        });
+    })
+
+    describe('remove',  () => {
+        it('should remove an user', async () => {
+            const createUserDTO = new CreateUserDTO();
+            createUserDTO.name = 'test';
+            await usersController.add(createUserDTO);
+            await usersController.remove(3);
+
+            const updatedUser = usersService.findAll().find(user => user.name == 'test');
+            expect(updatedUser).toBeUndefined();
         });
     })
 });
