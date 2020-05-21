@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ master, develop, "feature/*" ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: restore node module cache
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - run: npm ci
+      - run: npm test
+
+  build_dockerfile:
+    runs-on: ubuntu-latest
+    needs: build_and_test
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          buildx-version: latest
+          qemu-version: latest
+      - name: Build and push docker image
+        env:
+          REPO_NAME: ${{ secrets.ServiceRepo }}
+          CONTAINER_NAME: ${{ secrets.ServiceName }}
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm/v7 \
+            --file ./Dockerfile
+            --tag $REPO_NAME/$CONTAINER_NAME
+            --push
+
+  update_k8s:
+    runs-on: ubuntu-latest
+    needs: build_dockerfile
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - name: deploy to cluster
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          CONTAINER_NAME: ${{ secrets.ServiceName }}
+        with:
+          args: rollout restart --namespace=default deployment $CONTAINER_NAME
+      - name: verify deployment
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: "1.15"
+        with:
+          args: '"rollout status deployment/my-app"'
+
