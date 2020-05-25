@@ -9,7 +9,6 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
   @Get()
   async get(): Promise<ResponseUserDto[]> {
-    console.log("hi");
     return this.usersService.findAll();
   }
 
