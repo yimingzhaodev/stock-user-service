@@ -3,9 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { UserEntity } from './model/user.entity'
 import {InjectRepository} from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import {Repository, UpdateResult} from "typeorm";
 import {ResponseUserDto} from "./dto/response.user.dto";
-import {PartialUserDto} from "./dto/partial.user.dto";
 import {User} from "./interfaces/user.interface";
 
 @Injectable()
@@ -16,9 +15,9 @@ export class UsersService {
     this.userRepo.save(user).then(r => console.log(r));
   }
 
-  // update(userId: number, updatedUser: Partial<User>): void {
-  //   this.userRepo.update(userId, updatedUser);
-  // }
+  async update(userId: number, updatedUser: Partial<User>): Promise<UpdateResult> {
+    return await this.userRepo.update(userId, updatedUser);
+  }
   //
   // remove(userId: number): void {
   //   this.userRepo.remove(userId);
