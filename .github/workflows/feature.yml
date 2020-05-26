@@ -12,6 +12,7 @@ jobs:
       postgres:
         image: postgres
         env:
+          POSTGRES_DB: e2e_test
           POSTGRES_PASSWORD: password
         options: >-
           --health-cmd pg_isready
