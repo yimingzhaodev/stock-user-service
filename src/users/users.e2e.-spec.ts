@@ -30,7 +30,6 @@ describe('Users', () => {
         await app.init();
         repository = module.get(UserRepository)
     });
-
     afterEach(async () => {
         await repository.query(`delete
                                 from e2e_test.public.user
