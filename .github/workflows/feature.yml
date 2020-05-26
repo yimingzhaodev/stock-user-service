@@ -2,7 +2,7 @@ name: Feature
 
 on:
   pull_request:
-    branches: [ "feature/*" ]
+    branches: [ develop ]
 
 jobs:
   build_and_test:
