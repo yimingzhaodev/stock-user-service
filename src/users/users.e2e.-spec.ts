@@ -6,6 +6,7 @@ import {UserEntity} from "./model/user.entity";
 import {Repository} from "typeorm";
 import supertest = require("supertest");
 import {UserRepository} from "./user.repository";
+import {configService} from "../config/config.service";
 
 describe('Users', () => {
     let app: INestApplication;
@@ -16,7 +17,7 @@ describe('Users', () => {
                 UsersModule,
                 TypeOrmModule.forRoot({
                     type: 'postgres',
-                    host: 'postgres',
+                    host: configService.getTypeOrmConfig()['host'],
                     port: 5432,
                     username: 'postgres',
                     password: 'password',
