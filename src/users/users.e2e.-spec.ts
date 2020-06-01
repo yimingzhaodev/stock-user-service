@@ -16,7 +16,7 @@ describe('Users', () => {
                 UsersModule,
                 TypeOrmModule.forRoot({
                     type: 'postgres',
-                    host: process.env.DATABASE_HOST,
+                    host: 'postgres',
                     port: 5432,
                     username: 'postgres',
                     password: 'password',
