@@ -1,8 +1,9 @@
 import {UsersService} from "./users.service";
 import {UsersController} from "./users.controller";
 import {Test} from "@nestjs/testing";
-import {UsersRepository} from "./users.repository";
 import {CreateUserDTO} from "./dto/create.users.dto";
+import {UsersRepository} from "./users.repository";
+import {UserRepository} from "./user.repository";
 
 describe('UsersController', () => {
     let usersService : UsersService;
@@ -13,7 +14,10 @@ describe('UsersController', () => {
             controllers: [UsersController],
             providers: [
                 UsersService,
-                UsersRepository,
+                {
+                    provide: UserRepository,
+                    useClass: UsersRepository
+                },
             ]
         }).compile();
 
@@ -37,7 +41,8 @@ describe('UsersController', () => {
             createUserDTO.name = 'test'
             await usersController.add(createUserDTO)
 
-            const addedUser = usersService.findAll().find(user => user.name == 'test');
+            const allUsers = await usersService.findAll();
+            const addedUser = allUsers.find(user => user.name == 'test');
 
             expect(addedUser).toBeDefined();
             expect(addedUser.name).toEqual(createUserDTO.name);
@@ -52,7 +57,8 @@ describe('UsersController', () => {
             createUserDTO.name="John";
             await usersController.update(3, createUserDTO);
 
-            const updatedUser = usersService.findAll().find(user => user.name == 'John');
+            const allUsers = await usersService.findAll();
+            const updatedUser = allUsers.find(user => user.name == 'John');
 
             expect(updatedUser).toBeDefined();
             expect(updatedUser.name).toEqual(createUserDTO.name);
@@ -66,7 +72,8 @@ describe('UsersController', () => {
             await usersController.add(createUserDTO);
             await usersController.remove(3);
 
-            const updatedUser = usersService.findAll().find(user => user.name == 'test');
+            const allUsers = await usersService.findAll();
+            const updatedUser = allUsers.find(user => user.name == 'test');
             expect(updatedUser).toBeUndefined();
         });
     })

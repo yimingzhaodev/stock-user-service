@@ -1,24 +1,28 @@
-import { Injectable } from '@nestjs/common';
-import { User } from './interfaces/user.interface';
-import { UsersRepository } from './users.repository';
+import {Injectable} from '@nestjs/common';
+import {UserEntity} from './model/user.entity'
+import {DeleteResult, UpdateResult} from "typeorm";
+import {ResponseUserDto} from "./dto/response.user.dto";
+import {UserRepository} from "./user.repository";
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepo: UsersRepository) {}
+    constructor(private readonly usersRepository: UserRepository) {
+    }
 
-  add(user: Omit<User, 'id'>): void {
-    this.userRepo.add(user);
-  }
+    add(user: Omit<UserEntity, 'id'>): void {
+        this.usersRepository.save(user).then(r => console.log(r));
+    }
 
-  update(userId: number, updatedUser: Partial<User>): void {
-    this.userRepo.update(userId, updatedUser);
-  }
+    async update(userId: number, updatedUser: Partial<UserEntity>): Promise<UpdateResult> {
+        return await this.usersRepository.update(userId, updatedUser);
+    }
 
-  remove(userId: number): void {
-    this.userRepo.remove(userId);
-  }
+    async remove(userId: number): Promise<DeleteResult> {
+        return await this.usersRepository.delete(userId);
+    }
 
-  findAll(): User[] {
-    return this.userRepo.findAll();
-  }
+    async findAll(): Promise<ResponseUserDto[]> {
+        return await this.usersRepository.find()
+            .then(users => users.map(user => ResponseUserDto.fromEntity(user)));
+    }
 }
